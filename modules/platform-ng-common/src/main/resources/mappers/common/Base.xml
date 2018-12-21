@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.lb.model.common">
+
+	<insert id="save" parameterType="map" keyProperty="id" useGeneratedKeys="true">
+		insert into `${name}` (
+			<foreach item="col" index="i" collection="cols" open="" separator="," close="">
+				`${col}`
+			</foreach>
+		)
+		values (
+			<foreach item="val" index="i" collection="vals" open="" separator="," close="">
+				#{val}
+			</foreach>
+		)
+	</insert>
+	
+	<update id="update" parameterType="map">
+		update `${name}`
+		<set>
+			<foreach item="val" index="key" collection="datas" open="" separator="," close="">
+				`${key}` = #{val}
+			</foreach>
+		</set>
+		<where>
+			<if test="params != null and !params.isEmpty()">
+				<foreach item="val" index="key" collection="params" open="" separator=" " close="">
+					and `${key}` = #{val}
+				</foreach>
+			</if>
+		</where>
+	</update>
+	
+	<delete id="delete" parameterType="map">
+		delete from `${name}`
+		<where>
+			<if test="params != null and !params.isEmpty()">
+				<foreach item="val" index="key" collection="params" open="" separator=" " close="">
+					and `${key}` = #{val}
+				</foreach>
+			</if>
+		</where>
+	</delete>
+	
+	<delete id="deleteAll" parameterType="map">
+		delete from `${name}`
+		<where>
+			<if test="ids != null and !ids.isEmpty()">
+				`${col}` in
+				<foreach item="id" index="index" collection="ids" open="(" separator="," close=")">
+					#{id}
+				</foreach>
+			</if>
+		</where>
+	</delete>
+	
+	<select id="find" parameterType="map" resultType="map">
+		select * from `${name}`
+		<include refid="params" />
+	</select>
+
+	<select id="pagingFind" parameterType="map" resultType="map">
+		select * from `${name}`
+		<include refid="params" />
+		limit #{offset}, #{limit}
+	</select>
+	<select id="pagingCount" parameterType="map" resultType="int">
+		select count(*) from `${name}`
+		<include refid="params" />
+	</select>
+	
+	<!-- 通用的参数处理 -->
+	<sql id="params">
+		<where>
+			<if test="params != null and !params.isEmpty()">
+				<foreach item="val" index="key" collection="params" open="" separator=" " close="">
+					<!-- 顺序判断条件，只有一个when会执行，否则执行otherwise -->
+					<choose>
+						<when test="'isNull'.equals(val)">
+							and `${key}` is null
+						</when>
+						<when test="val != null and val != ''">
+							and `${key}` = binary #{val}
+						</when>
+					</choose>
+				</foreach>
+			</if>
+			<if test="likeParams != null and !likeParams.isEmpty()">
+				<foreach item="val" index="key" collection="likeParams" open="" separator=" " close="">
+					<if test="val != null and val != ''">
+						and `${key}` like concat('%', #{val}, '%')
+					</if>
+				</foreach>
+			</if>
+		</where>
+	</sql>
+	
+</mapper>
