@@ -15,15 +15,20 @@
 	</parent>
 
 	<dependencies>
-		<!-- eureka -->
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>platform-ng-common</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 		<!-- zuul -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-netflix-zuul</artifactId>
+		</dependency>
+		<!-- feign -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-openfeign</artifactId>
 		</dependency>
 	</dependencies>
 

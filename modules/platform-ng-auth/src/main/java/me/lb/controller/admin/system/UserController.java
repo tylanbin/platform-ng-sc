@@ -105,7 +105,7 @@ public class UserController {
 	}
 
 	@RequestMapping(value = "/{empId}/user/data", method = RequestMethod.GET)
-	public String data(@PathVariable int empId) throws Exception {
+	public String data(@PathVariable int empId) {
 		try {
 			// 用于展示某个员工用户列表的查询
 			Map<String, Object> params = new HashMap<String, Object>();

@@ -1,4 +1,4 @@
-package me.lb.feign;
+package me.lb.service.feign;
 
 import java.util.List;
 

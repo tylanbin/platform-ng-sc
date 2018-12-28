@@ -17,11 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import me.lb.feign.OrgService;
 import me.lb.model.pagination.Pagination;
 import me.lb.model.system.Org;
 import me.lb.model.system.Perm;
 import me.lb.model.system.Role;
+import me.lb.service.feign.OrgService;
 import me.lb.service.system.PermService;
 import me.lb.service.system.RoleService;
 import me.lb.support.jackson.JsonWriter;
