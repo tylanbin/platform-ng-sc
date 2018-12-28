@@ -1,9 +1,12 @@
 package me.lb;
 
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import me.lb.support.system.filter.PaginationFilter;
 
 @Configuration
 public class Config {
@@ -21,6 +24,17 @@ public class Config {
 			}
 
 		};
+	}
+
+	/**
+	 * 分页过滤器，用于获取分页参数
+	 */
+	@Bean
+	public FilterRegistrationBean<PaginationFilter> paginationFilter() {
+		FilterRegistrationBean<PaginationFilter> reg = new FilterRegistrationBean<PaginationFilter>();
+		reg.setFilter(new PaginationFilter());
+		reg.addUrlPatterns("/*");
+		return reg;
 	}
 
 }

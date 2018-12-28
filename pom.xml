@@ -22,6 +22,7 @@
 		<module>modules/platform-ng-sys</module>
 		<module>modules/platform-ng-auth</module>
 		<module>modules/platform-ng-zuul</module>
+		<module>modules/platform-ng-web-easyui</module>
 	</modules>
 
 	<properties>

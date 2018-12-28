@@ -43,7 +43,7 @@ public class EmpController {
 		binder.registerCustomEditor(Date.class, dateEditor);
 	}
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.POST)
+	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
 	public String edit(@PathVariable int id, Emp temp) {
 		try {
 			Emp obj = empService.findById(id);

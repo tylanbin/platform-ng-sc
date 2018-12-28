@@ -28,9 +28,8 @@ public class PermController {
 	@Autowired
 	private PermService permService;
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.POST)
+	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
 	public String edit(@PathVariable int id, Perm temp) {
-		// 这里理论上应该使用put请求，但由于form标签不支持put方式，故使用post代替
 		try {
 			Perm obj = permService.findById(id);
 			obj.setName(temp.getName());

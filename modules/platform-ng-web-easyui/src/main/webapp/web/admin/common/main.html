@@ -1,0 +1,262 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>后台管理</title>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="pragma" content="no-cache" />
+<meta http-equiv="cache-control" content="no-cache" />
+<meta http-equiv="expires" content="0" />
+<!-- styles -->
+<link rel="stylesheet" type="text/css" href="../../../assets/common/jquery-easyui/themes/custom/easyui.css">
+<link rel="stylesheet" type="text/css" href="../../../assets/common/jquery-easyui/themes/icon.css">
+<link rel="stylesheet" type="text/css" href="../../../assets/common/jquery-easyui-custom/easyui.custom.css">
+<!-- icon -->
+<link rel="icon" type="image/x-icon" href="../../../../assets/common/favicon.ico" />
+<link rel="shortcut icon" type="image/x-icon" href="../../../../assets/common/favicon.ico" />
+<!-- scripts -->
+<script type="text/javascript" src="../../../assets/common/jquery-easyui/jquery-1.8.3.min.js"></script>
+<script type="text/javascript" src="../../../assets/common/jquery-easyui/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="../../../assets/common/jquery-easyui/locale/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript" src="../../../assets/common/jquery-easyui-custom/easyui.custom.js"></script>
+<script type="text/javascript" src="../../../assets/common/framework.js"></script>
+<!-- page scripts -->
+<script type="text/javascript">
+	var menuOfTab;
+	$(function() {
+		$('#tabs').tabs({
+			onContextMenu : function(e, title, index) {
+				e.preventDefault();
+				if (index != 0) {
+					menuOfTab = index;
+					$('#menu').menu('show', {
+						left : e.pageX,
+						top : e.pageY
+					});
+				}
+			},
+			onSelect : function(title, index) {
+				// 该方式可以在选中后自动刷新tab，但会使得效率下降
+				/* var content = $(this).tabs('getTab', index).panel('options').content;
+				$(this).tabs('getTab', index).panel({
+					content : content
+				}); */
+			}
+		});
+		// 获取用户信息
+		/* $.ajax({
+			type : 'post',
+			url : 'getLoginInfo',
+			dataType : 'json',
+			async : true,
+			success : function(data) {
+				if (data) {
+					if (data.emp) {
+						$('#nav .username').html(data.emp.name);
+					} else {
+						$('#nav .username').html(data.loginName);
+					}
+				}
+			}
+		}); */
+		// 访问来源判断（流程设计器返回预留）
+		var from = window.location.search.substring(6);
+	});
+	function tab_add(title, url) {
+		if ($('#tabs').tabs('exists', title)) {
+			$('#tabs').tabs('select', title);
+		} else {
+			var content = '<iframe scrolling="auto" frameborder="0" src="'
+					+ url + '" style="width:100%; height:100%;"></iframe>';
+			$('#tabs').tabs('add', {
+				title : title,
+				content : content,
+				closable : true
+			});
+		}
+	}
+	function tab_refresh() {
+		var content = $('#tabs').tabs('getTab', menuOfTab).panel('options').content;
+		$('#tabs').tabs('getTab', menuOfTab).panel({
+			content : content
+		});
+	}
+	function tab_close() {
+		$('#tabs').tabs('close', menuOfTab);
+	}
+	function dlg_change() {
+		$('#fm-change').form('clear');
+		$('#dlg-change').dialog('open');
+	}
+	function func_change() {
+		// 这里是利用html中的form进行提交，所以需要加上项目路径AppCore.baseUrl
+		var newPass = $('#fm-change [name="newPass"]').val();
+		var rePass = $('#fm-change [name="rePass"]').val();
+		if (newPass == rePass) {
+			$('#fm-change').form('submit', {
+				url : AppCore.baseUrl + 'admin/common/change',
+				onSubmit : function(param) {
+					return $(this).form('validate');
+				},
+				success : function(data) {
+					var data = eval('(' + data + ')');
+					if (data.success) {
+						// 成功后需要注销账号
+						$('#dlg-change').dialog('close');
+						$.messager.alert({
+							title : '提示',
+							msg : '修改成功，需要重新登录！',
+							icon : 'info',
+							fn : function() {
+								func_logout();
+							}
+						});
+					} else {
+						$.messager.show({
+							title : '错误',
+							msg : data.msg,
+							showType : 'fade',
+							style : {
+								right : '',
+								bottom : ''
+							}
+						});
+					}
+				}
+			});
+		} else {
+			$.messager.show({
+				title : '错误',
+				msg : '两次输入的密码不一致！',
+				showType : 'fade',
+				style : {
+					right : '',
+					bottom : ''
+				}
+			});
+		}
+	}
+	function func_logout() {
+		$.ajax({
+			type : 'post',
+			url : 'admin/common/logout',
+			dataType : 'json',
+			async : true,
+			success : function(data) {
+				if (data.success) {
+					window.location.href = AppCore.baseUrl + 'web/admin/common/login.html';
+				} else {
+					$.messager.show({
+						title : '错误',
+						msg : data.msg,
+						showType : 'fade',
+						style : {
+							right : '',
+							bottom : ''
+						}
+					});
+				}
+			},
+			error : function() {
+				$.messager.show({
+					title : '错误',
+					msg : '服务器正忙，请稍后再试！',
+					showType : 'fade',
+					style : {
+						right : '',
+						bottom : ''
+					}
+				});
+			}
+		});
+	}
+</script>
+<style type="text/css">
+	.panel-header { height: 18px; }
+	#nav { list-style-type: none; display: block; height: 21px; position: absolute; top: 40px; right: 5px; }
+	#nav li { float: left; margin-left: -1px; padding: 3px 5px; line-height: 20px; position: relative; }
+	#nav li a { line-height: 20px; }
+</style>
+</head>
+
+<body class="easyui-layout" data-options="fit:true">
+	<div data-options="region:'north'" style="height:80px;overflow:hidden;">
+		<!-- 右上角工具条 -->
+		<ul id="nav">
+			<li>欢迎使用，<b class="username">admin</b></li>
+			<li><a href="javascript:;" onclick="dlg_change()">修改密码</a></li>
+			<li><a href="javascript:;" onclick="func_logout()">退出</a></li>
+		</ul>
+	</div>
+	<div data-options="region:'west',title:'&nbsp;菜单栏',split:true,iconCls:'icon-table'" style="width:180px;">
+		<div class="easyui-accordion" data-options="fit:true,border:false,selected:0">
+			<!-- <div data-options="title:'&nbsp;工作空间',iconCls:'icon-page'" style="padding:8px;">
+				<ul class="easyui-tree" data-options="onBeforeSelect:function(node){return false;}">
+					<li><a onclick="tab_add('可发起的流程','../process/formkey/list-start.html')">可发起的流程</a></li>
+					<li><a onclick="tab_add('待办任务','../process/formkey/list-todo.html')">待办任务</a></li>
+					<li><a onclick="tab_add('参与过的流程','../process/formkey/list-hisProcs.html')">参与过的流程</a></li>
+					<li><a onclick="tab_add('办理过的任务','../process/formkey/list-hisTasks.html')">办理过的任务</a></li>
+				</ul>
+			</div>
+			<div data-options="title:'&nbsp;流程管理功能',iconCls:'icon-page'" style="padding:8px;">
+				<ul class="easyui-tree" data-options="onBeforeSelect:function(node){return false;}">
+					<li><a onclick="tab_add('流程模型管理','../process/model/list.html')">流程模型管理</a></li>
+					<li><a onclick="tab_add('流程定义管理','../process/def/list.html')">流程定义管理</a></li>
+					<li><a onclick="tab_add('运行中的流程','../process/ins/running.html')">运行中的流程</a></li>
+					<li><a onclick="tab_add('已结束的流程','../process/ins/his.html')">已结束的流程</a></li>
+				</ul>
+			</div> -->
+			<div data-options="title:'&nbsp;基础管理功能',iconCls:'icon-server'" style="padding:8px;">
+				<ul class="easyui-tree" data-options="onBeforeSelect:function(node){return false;}">
+					<li><a onclick="tab_add('组织机构管理','../system/org/list.html')">组织机构管理</a></li>
+					<li><a onclick="tab_add('人员用户管理','../system/emp/list.html')">人员用户管理</a></li>
+					<li><a onclick="tab_add('权限资源管理','../system/perm/list.html')">权限资源管理</a></li>
+					<li><a onclick="tab_add('系统角色管理','../system/role/list.html')">系统角色管理</a></li>
+				</ul>
+			</div>
+			<div data-options="title:'&nbsp;新增管理功能',iconCls:'icon-add'" style="padding:8px;">
+				<ul class="easyui-tree" data-options="onBeforeSelect:function(node){return false;}">
+					<li><a onclick="tab_add('Foo示例模块','../demo/foo/list.html')">Foo示例模块</a></li>
+					<li>待添加</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div data-options="region:'center',border:false">
+		<div data-options="fit:true" class="easyui-tabs" id="tabs">
+			<div title="主页"></div>
+		</div>
+		<div id="menu" class="easyui-menu">
+			<div data-options="iconCls:'icon-reload'" onclick="tab_refresh()">刷新</div>
+			<div data-options="iconCls:'icon-cancel'" onclick="tab_close()">关闭</div>
+		</div>
+	</div>
+	<!-- 修改密码 -->
+	<div id="dlg-change" class="easyui-dialog" style="width:320px;padding:20px 30px;"
+		data-options="title:'修改密码',closed:true,modal:true,buttons:'#dlg-btn-change'">
+		<form id="fm-change" method="post">
+			<input type="hidden" id="id-change" />
+			<input type="hidden" id="orgId-change" name="orgId" />
+			<div style="text-align: center;">
+				<table style="border-width:0;" align="center">
+					<tr>
+						<td style="text-align: right;">旧密码：</td>
+						<td><input type="password" name="oldPass" class="easyui-textbox" data-options="required:true" /></td>
+					</tr>
+					<tr>
+						<td style="text-align: right;">新密码：</td>
+						<td><input type="password" name="newPass" class="easyui-textbox" data-options="required:true,validType:'loginPass'" /></td>
+					</tr>
+					<tr>
+						<td style="text-align: right;">重复新密码：</td>
+						<td><input type="password" name="rePass" class="easyui-textbox" data-options="required:true,validType:'loginPass'" /></td>
+					</tr>
+				</table>
+			</div>
+		</form>
+		<div id="dlg-btn-change">
+			<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="func_change()">确定</a>
+			<a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" onclick="$('#dlg-change').dialog('close');">取消</a>
+		</div>
+	</div>
+</body>
+</html>

@@ -38,7 +38,7 @@ public class RoleController {
 	@Autowired
 	private OrgService orgService;
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.POST)
+	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
 	public String edit(@PathVariable int id, Role temp) {
 		try {
 			Role validate = roleService.findByName(temp.getName());

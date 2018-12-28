@@ -28,7 +28,7 @@ public class OrgController {
 	@Autowired
 	private OrgService orgService;
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.POST)
+	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
 	public String edit(@PathVariable int id, Org temp) {
 		try {
 			Org obj = orgService.findById(id);
