@@ -13,6 +13,7 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import me.lb.support.shiro.realm.SystemRealm;
+import me.lb.support.zuul.filter.AuthFilter;
 
 @Configuration
 public class Config {
@@ -27,6 +28,13 @@ public class Config {
 				registry.addMapping("/**").allowCredentials(true).allowedHeaders("*").allowedOrigins("*").allowedMethods("*");
 			}
 		};
+	}
+	
+	// zuuk过滤器
+	
+	@Bean
+	public AuthFilter authFilter() {
+		return new AuthFilter();
 	}
 
 	// shiro配置
