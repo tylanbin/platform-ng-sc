@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import me.lb.dao.system.UserDao;
 import me.lb.model.system.User;
@@ -12,6 +13,7 @@ import me.lb.service.common.impl.GenericServiceImpl;
 import me.lb.service.system.UserService;
 
 @Service
+@Transactional(rollbackFor = Exception.class)
 public class UserServiceImpl extends GenericServiceImpl<User> implements UserService {
 
 	@Override

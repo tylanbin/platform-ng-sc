@@ -2,16 +2,17 @@ package me.lb.service.system.impl;
 
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import me.lb.dao.system.PermDao;
 import me.lb.model.system.Perm;
 import me.lb.service.common.impl.GenericServiceImpl;
 import me.lb.service.system.PermService;
 
-import org.springframework.stereotype.Service;
-
 @Service
-public class PermServiceImpl extends GenericServiceImpl<Perm> implements
-		PermService {
+@Transactional(rollbackFor = Exception.class)
+public class PermServiceImpl extends GenericServiceImpl<Perm> implements PermService {
 
 	@Override
 	public List<Perm> findTopPerms() {

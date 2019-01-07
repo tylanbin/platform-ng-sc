@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import me.lb.dao.system.RoleDao;
 import me.lb.model.system.Role;
@@ -12,6 +13,7 @@ import me.lb.service.common.impl.GenericServiceImpl;
 import me.lb.service.system.RoleService;
 
 @Service
+@Transactional(rollbackFor = Exception.class)
 public class RoleServiceImpl extends GenericServiceImpl<Role> implements RoleService {
 
 	@Override
