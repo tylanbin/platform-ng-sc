@@ -20,7 +20,7 @@ public class Config {
 
 	// spring-boot 2.x 中支持cors（跨域）的全局设置
 
-	@Bean
+	/*@Bean
 	public WebMvcConfigurer corsConfigurer() {
 		return new WebMvcConfigurer() {
 			@Override
@@ -28,7 +28,7 @@ public class Config {
 				registry.addMapping("/**").allowCredentials(true).allowedHeaders("*").allowedOrigins("*").allowedMethods("*");
 			}
 		};
-	}
+	}*/
 	
 	// zuuk过滤器
 	
@@ -60,7 +60,8 @@ public class Config {
 		// 配置需要过滤的路径
 		Map<String, String> map = new HashMap<String, String>();
 		map.put("/api/zuul/**", "anon");
-		map.put("/**", "authc");
+		map.put("/**", "anon");
+		// map.put("/**", "authc");
 		shiroFilter.setFilterChainDefinitionMap(map);
 		return shiroFilter;
 	}

@@ -19,3 +19,6 @@ rebel.xml
 
 # maven
 target/
+
+# tx-lcn
+.txlcn

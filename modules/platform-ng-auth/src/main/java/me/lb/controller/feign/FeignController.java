@@ -22,6 +22,17 @@ public class FeignController {
 	private UserService userService;
 	@Autowired
 	private RoleService roleService;
+	
+	@RequestMapping(value = "/user/findById", method = RequestMethod.GET)
+	public String findUserById(int id) {
+		try {
+			User obj = userService.findById(id);
+			return JsonWriter.getInstance().filter(User.class).getWriter().writeValueAsString(obj);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "{}";
+		}
+	}
 
 	@RequestMapping(value = "/user/findByLoginName", method = RequestMethod.GET)
 	public String findUserByLoginName(String loginName) {

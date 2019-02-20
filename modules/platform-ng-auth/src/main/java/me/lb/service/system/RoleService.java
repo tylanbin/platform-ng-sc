@@ -35,9 +35,9 @@ public interface RoleService extends GenericService<Role> {
 	 * 查询所有的角色、权限对应关系
 	 * @param roleId 角色id（可为空）
 	 * @param permId 权限id（可为空）
-	 * @return 角色id->权限id的map
+	 * @return 角色id与权限id的map
 	 */
-	public List<Map<Integer, Integer>> findRolePerm(Integer roleId, Integer permId);
+	public List<Map<String, Integer>> findRolePerm(Integer roleId, Integer permId);
 	
 	/**
 	 * 存储一个角色和权限的对应关系

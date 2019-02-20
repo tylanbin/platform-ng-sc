@@ -4,17 +4,83 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.codingapi.txlcn.tc.annotation.LcnTransaction;
 
 import me.lb.dao.system.UserDao;
 import me.lb.model.system.User;
 import me.lb.service.common.impl.GenericServiceImpl;
+import me.lb.service.feign.ActIdentityService;
 import me.lb.service.system.UserService;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
 public class UserServiceImpl extends GenericServiceImpl<User> implements UserService {
+	
+	@Autowired
+	private ActIdentityService actIdentityService;
+
+	@Override
+	@LcnTransaction
+	public int save(User obj) {
+		// 先存储系统的用户
+		int id = super.save(obj);
+		if (id > 0) {
+			actIdentityService.saveActUser(String.valueOf(id), obj.getLoginName(), obj.getLoginPass());
+		}
+		return id;
+	}
+
+	@Override
+	@LcnTransaction
+	public void update(int id, User obj) {
+		// 先更新系统的用户
+		super.update(id, obj);
+		actIdentityService.saveActUser(String.valueOf(id), obj.getLoginName(), obj.getLoginPass());
+	}
+
+	@Override
+	@LcnTransaction
+	public void delete(int id) {
+		// 先删除Activiti的用户
+		if (id > 0) {
+			User user = ((UserDao) dao).findById(id);
+			actIdentityService.delActUser(String.valueOf(id), user.getLoginName(), user.getLoginPass());
+		}
+		// 后处理系统用户
+		super.delete(id);
+	}
+
+	@Override
+	@LcnTransaction
+	public void deleteAll() {
+		List<User> users = findAll();
+		for (User user : users) {
+			// 先删除Activiti的用户
+			if (user.getId() > 0) {
+				actIdentityService.delActUser(String.valueOf(user.getId()), user.getLoginName(), user.getLoginPass());
+			}
+		}
+		// 后处理系统用户
+		super.deleteAll();
+	}
+
+	@Override
+	@LcnTransaction
+	public void deleteAll(List<Integer> ids) {
+		for (int id : ids) {
+			// 先删除Activiti的用户
+			if (id > 0) {
+				User user = ((UserDao) dao).findById(id);
+				actIdentityService.delActUser(String.valueOf(id), user.getLoginName(), user.getLoginPass());
+			}
+		}
+		// 后处理系统用户
+		super.deleteAll(ids);
+	}
 
 	@Override
 	public boolean validate(String loginName) {
@@ -39,7 +105,7 @@ public class UserServiceImpl extends GenericServiceImpl<User> implements UserSer
 	}
 
 	@Override
-	public List<Map<Integer, Integer>> findUserRole(Integer userId, Integer roleId) {
+	public List<Map<String, Integer>> findUserRole(Integer userId, Integer roleId) {
 		return ((UserDao) dao).findUserRole(userId, roleId);
 	}
 

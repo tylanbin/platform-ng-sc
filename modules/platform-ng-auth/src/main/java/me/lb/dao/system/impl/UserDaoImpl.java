@@ -27,7 +27,7 @@ public class UserDaoImpl extends GenericDaoImpl<User> implements UserDao {
 	}
 
 	@Override
-	public List<Map<Integer, Integer>> findUserRole(Integer userId, Integer roleId) {
+	public List<Map<String, Integer>> findUserRole(Integer userId, Integer roleId) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("userId", userId);
 		params.put("roleId", roleId);

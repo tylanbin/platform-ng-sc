@@ -4,17 +4,83 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.codingapi.txlcn.tc.annotation.LcnTransaction;
 
 import me.lb.dao.system.RoleDao;
 import me.lb.model.system.Role;
 import me.lb.service.common.impl.GenericServiceImpl;
+import me.lb.service.feign.ActIdentityService;
 import me.lb.service.system.RoleService;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
 public class RoleServiceImpl extends GenericServiceImpl<Role> implements RoleService {
+	
+	@Autowired
+	private ActIdentityService actIdentityService;
+
+	@Override
+	@LcnTransaction
+	public int save(Role obj) {
+		// 先存储系统的角色
+		int id = super.save(obj);
+		if (id > 0) {
+			actIdentityService.saveActGroup(String.valueOf(id), obj.getName());
+		}
+		return id;
+	}
+
+	@Override
+	@LcnTransaction
+	public void update(int id, Role obj) {
+		// 先更新系统的角色
+		super.update(id, obj);
+		actIdentityService.saveActGroup(String.valueOf(id), obj.getName());
+	}
+
+	@Override
+	@LcnTransaction
+	public void delete(int id) {
+		// 先删除Activiti的组
+		if (id > 0) {
+			Role role = ((RoleDao) dao).findById(id);
+			actIdentityService.delActGroup(String.valueOf(id), role.getName());
+		}
+		// 后处理系统角色
+		super.delete(id);
+	}
+
+	@Override
+	@LcnTransaction
+	public void deleteAll() {
+		List<Role> roles = findAll();
+		for (Role role : roles) {
+			// 先删除Activiti的组
+			if (role.getId() > 0) {
+				actIdentityService.delActGroup(String.valueOf(role.getId()), role.getName());
+			}
+		}
+		// 后处理系统角色
+		super.deleteAll();
+	}
+
+	@Override
+	@LcnTransaction
+	public void deleteAll(List<Integer> ids) {
+		for (int id : ids) {
+			// 先删除Activiti的组
+			if (id > 0) {
+				Role role = ((RoleDao) dao).findById(id);
+				actIdentityService.delActGroup(String.valueOf(id), role.getName());
+			}
+		}
+		// 后处理系统角色
+		super.deleteAll(ids);
+	}
 
 	@Override
 	public boolean validate(String name) {
@@ -44,7 +110,7 @@ public class RoleServiceImpl extends GenericServiceImpl<Role> implements RoleSer
 	}
 
 	@Override
-	public List<Map<Integer, Integer>> findRolePerm(Integer roleId, Integer permId) {
+	public List<Map<String, Integer>> findRolePerm(Integer roleId, Integer permId) {
 		return ((RoleDao) dao).findRolePerm(roleId, permId);
 	}
 

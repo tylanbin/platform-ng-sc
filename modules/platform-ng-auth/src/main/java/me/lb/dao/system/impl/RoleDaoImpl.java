@@ -32,7 +32,7 @@ public class RoleDaoImpl extends GenericDaoImpl<Role> implements RoleDao {
 	}
 
 	@Override
-	public List<Map<Integer, Integer>> findRolePerm(Integer roleId, Integer permId) {
+	public List<Map<String, Integer>> findRolePerm(Integer roleId, Integer permId) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("roleId", roleId);
 		params.put("permId", permId);

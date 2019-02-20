@@ -14,9 +14,9 @@ public interface UserDao extends GenericDao<User> {
 	 * 查询所有的用户、角色对应关系
 	 * @param userId 用户id（可为空）
 	 * @param roleId 角色id（可为空）
-	 * @return 用户id->角色id的map
+	 * @return 用户id与角色id的map
 	 */
-	public List<Map<Integer, Integer>> findUserRole(Integer userId, Integer roleId);
+	public List<Map<String, Integer>> findUserRole(Integer userId, Integer roleId);
 
 	/**
 	 * 存储一个用户和角色的对应关系

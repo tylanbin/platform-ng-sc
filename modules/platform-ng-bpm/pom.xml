@@ -4,8 +4,8 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>platform-ng-auth</artifactId>
-	<name>platform-ng-auth</name>
+	<artifactId>platform-ng-bpm</artifactId>
+	<name>platform-ng-bpm</name>
 
 	<parent>
 		<groupId>me.lb</groupId>
@@ -14,11 +14,19 @@
 		<relativePath>../../pom.xml</relativePath>
 	</parent>
 
+	<properties>
+		<activiti.version>5.16.6</activiti.version>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>platform-ng-common</artifactId>
 			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-core</artifactId>
 		</dependency>
 		<!-- feign -->
 		<dependency>
@@ -33,6 +41,22 @@
 		<dependency>
 			<groupId>com.codingapi.txlcn</groupId>
 			<artifactId>txlcn-txmsg-netty</artifactId>
+		</dependency>
+		<!-- activiti -->
+		<dependency>
+			<groupId>org.activiti</groupId>
+			<artifactId>activiti-spring</artifactId>
+			<version>${activiti.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.activiti</groupId>
+			<artifactId>activiti-json-converter</artifactId>
+			<version>${activiti.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.activiti</groupId>
+			<artifactId>activiti-modeler</artifactId>
+			<version>${activiti.version}</version>
 		</dependency>
 	</dependencies>
 
