@@ -5,6 +5,8 @@
 .mymetadata
 .myhibernatedata
 .springBeans
+.apt_generated
+.factorypath
 
 # java
 *.class
