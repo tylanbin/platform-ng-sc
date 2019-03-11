@@ -15,8 +15,6 @@ import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -51,16 +49,6 @@ public class Config {
 	}
 
 	// Activiti配置
-	
-	@Bean
-	public WebSecurityConfigurerAdapter authConfigurer() {
-		return new WebSecurityConfigurerAdapter() {
-			@Override
-			protected void configure(HttpSecurity http) throws Exception {
-				http.authorizeRequests().antMatchers("/**").permitAll().and().httpBasic();
-			}
-		};
-	}
 
 	@Bean
 	public SpringProcessEngineConfiguration processEngineConfiguration(DataSource dataSource, PlatformTransactionManager transactionManager) {

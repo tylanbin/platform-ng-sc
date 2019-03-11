@@ -12,3 +12,5 @@ NG开发平台的springcloud版本（重写中）
 
 ## 注意
 * auth与bpm包含了分布式事务（使用了[tx-lcn](https://github.com/codingapi/tx-lcn/)）
+* 项目启动需要Redis、TX-LCN服务器环境（tx-lcn项目的tm模块）
+* 项目启动顺序（每个英文括号中的不区分顺序）：(auth/sys/bpm) -> (zuul) -> (web-easyui)
