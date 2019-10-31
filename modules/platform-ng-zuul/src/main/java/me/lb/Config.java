@@ -20,7 +20,7 @@ public class Config {
 
 	// spring-boot 2.x 中支持cors（跨域）的全局设置
 
-	/*@Bean
+	@Bean
 	public WebMvcConfigurer corsConfigurer() {
 		return new WebMvcConfigurer() {
 			@Override
@@ -28,7 +28,7 @@ public class Config {
 				registry.addMapping("/**").allowCredentials(true).allowedHeaders("*").allowedOrigins("*").allowedMethods("*");
 			}
 		};
-	}*/
+	}
 	
 	// zuuk过滤器
 	
